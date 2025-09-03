@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Heart Model Clean Labels</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+  <style>
+    /* ===== BASE STYLES ===== */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      height: 100vh;
+      font-family: "DM Sans", sans-serif;
+    }
+
+    /* ===== MODEL VIEWER STYLES ===== */
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background-color: transparent;
+      cursor: grab;
+      --poster-color: transparent;
+      position: relative; /* for positioning AR button */
+    }
+
+    /* ===== FORCE SHOW AR BUTTON ===== */
+ model-viewer::part(default-ar-button) {
+  position: absolute;
+  bottom: 90px;           
+  left: 70%;              
+  transform: translate(-40%, 0); /* Center perfectly */
+  background: #ffffff;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 9999;
+  cursor: pointer;
+}
+    /* ===== HOTSPOT STYLES ===== */
+    .hotspot {
+      background: #67130c;
+      border-radius: 50%;
+      width: 33px;
+      height: 33px;
+      border: 2px solid #fff;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 0 6px rgba(103, 19, 12, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== LABEL STYLES ===== */
+    .label {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 40px;
+      transform: translateY(-50%);
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      color: #67130c;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .label::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -20px;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 1.5px;
+      background: #67130c;
+    }
+
+    /* ===== ACTIVE STATE ===== */
+    .hotspot.active .label {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <model-viewer
+      id="heartViewer"
+      src="https://noursalous.github.io/WebAR/realistic_human_heart.glb"
+      ios-src="https://noursalous.github.io/WebAR/Realistic_Human_Heart.usdz"
+      alt="3D Heart Model"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      camera-controls
+      camera-orbit="0deg 75deg 5m"
+      min-camera-orbit="auto 15deg 1m"
+      max-camera-orbit="auto 90deg 5m"
+      field-of-view="45deg"
+      shadow-intensity="1"
+      interaction-prompt="auto"
+      quick-look-browsers="safari chrome">
+    
+    <!-- Hotspots -->
+    <button id="hotspot-svc" class="hotspot" slot="hotspot-svc"
+      data-position="-0.340815m 0.711882m 0.172959m"
+      data-normal="0m 1m 0m">
+      <span class="label">Superior Vena Cava</span>
+    </button>
+
+    <button id="hotspot-pa" class="hotspot" slot="hotspot-pa"
+      data-position="0.419654m 0.412853m 0.077488m"
+      data-normal="0m 1m 0m">
+      <span class="label">Pulmonary Arteries</span>
+    </button>
+
+    <button id="hotspot-aorta" class="hotspot" slot="hotspot-aorta"
+      data-position="0.101478m 0.622114m -0.123833m"
+      data-normal="0m 1m 0m">
+      <span class="label">Aorta</span>
+    </button>
+  </model-viewer>
+
+  <script>
+    const viewer = document.querySelector("#heartViewer");
+    const hotspots = document.querySelectorAll(".hotspot");
+
+    function focusOnPart(hotspotId, orbit, target) {
+      hotspots.forEach(h => h.classList.remove("active"));
+      const hotspot = document.getElementById(hotspotId);
+      hotspot.classList.add("active");
+      viewer.setAttribute('camera-orbit', orbit);
+      viewer.setAttribute('camera-target', target);
+    }
+
+    document.querySelector("#hotspot-svc").addEventListener("click", () => {
+      focusOnPart("hotspot-svc", "-40deg 65deg 1.2m", "-0.340815m 0.711882m 0.172959m");
+    });
+
+    document.querySelector("#hotspot-pa").addEventListener("click", () => {
+      focusOnPart("hotspot-pa", "100deg 85deg 2.0m", "0.05m 0.1m 0.03m");
+    });
+
+    document.querySelector("#hotspot-aorta").addEventListener("click", () => {
+      focusOnPart("hotspot-aorta", "-10deg 40deg 1.5m", "0.01m 0.60m 0.03m");
+    });
+  </script>
+</body>
+</html>

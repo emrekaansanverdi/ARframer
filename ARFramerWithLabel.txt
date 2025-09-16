@@ -1,0 +1,29 @@
+import React from "react"
+import { addPropertyControls, ControlType } from "framer"
+
+type Props = {
+    url: string
+}
+
+export function HeartModel({ url }: Props) {
+    return (
+        <iframe
+            src={url}
+            style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+                background: "transparent",
+            }}
+            allow="xr-spatial-tracking; gyroscope; accelerometer; magnetometer; camera; fullscreen"
+        />
+    )
+}
+
+addPropertyControls(HeartModel, {
+    url: {
+        type: ControlType.String,
+        title: "Embed URL",
+        defaultValue: "https://noursalous.github.io/ARframer/",
+    },
+})
